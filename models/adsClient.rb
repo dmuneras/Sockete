@@ -30,7 +30,7 @@ class AdsClient
     if !(user_entry == "\n")
       @socket.write(user_entry)
     else
-      puts "Ingrese algo para enviar\n"
+      puts " -.- write something to send ...\n"
     end
   end
 end
