@@ -13,7 +13,7 @@ class AdsClient
     while @working do  
       read_from_console
     end
-    Thread.kill(writter) unless @working  
+    Thread.kill(writter) 
   end 
 
   private
