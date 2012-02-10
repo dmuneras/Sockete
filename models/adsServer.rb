@@ -2,7 +2,7 @@ require "socket"
 class AdsServer
   
   def initialize( host,port )
-    @user_list = Array::new
+    @user_info = Array::new
     @descriptors = Array::new
     @serverSocket = TCPServer.new( host, port )
     @serverSocket.setsockopt( Socket::SOL_SOCKET, Socket::SO_REUSEADDR, 1 )
@@ -47,14 +47,16 @@ class AdsServer
       return 
     end
     unless /get_ads:/.match(umsg).nil?
-      sock.write("(underconstruction)sending ads...\n")
+      index = @descriptors.index(sock)
+      sock.write("#{@user_info[index-1][:nickname]} from " +
+                "#{@user_info[index-1][:channel]} => (underconstruction)sending ads...\n")
       return
     end 
   end
   
   def first_message(msg,sock)
     user_info = msg.split(" ")
-    @user_list.push(user_info[1])
+    @user_info.push({:nickname => user_info[1], :channel => user_info[2]})
     str = sprintf("Welcome %s\n", user_info[1])
     sock.write(str)
     puts str
