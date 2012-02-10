@@ -8,15 +8,13 @@ class AdsServer
     @serverSocket.setsockopt( Socket::SOL_SOCKET, Socket::SO_REUSEADDR, 1 )
     printf("adsServer started on port %d\n", port)
     @descriptors.push( @serverSocket )
-  end # initialize
+  end 
 
   def run
     while 1
       res = select( @descriptors, nil, nil, nil)
       if res != nil then
-        # Iterate through the tagged read descriptors
         for sock in res[0]
-          # Received a connect to the server (listening) socket
           if sock == @serverSocket 
             accept_new_connection
           elsif sock.eof? 
@@ -31,7 +29,7 @@ class AdsServer
         end
       end
     end
-  end #run
+  end 
   
   private
   
@@ -69,6 +67,6 @@ class AdsServer
       end
     end
     print(str)
-  end # broadcast_string
+  end 
 
-end #server
+end 

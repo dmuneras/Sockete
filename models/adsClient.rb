@@ -14,7 +14,7 @@ class AdsClient
       read_from_console
     end
     Thread.kill(writter) unless @working  
-  end # initialize
+  end 
 
   private
 
