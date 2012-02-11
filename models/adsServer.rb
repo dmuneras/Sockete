@@ -1,7 +1,10 @@
+$:.unshift File.dirname(__FILE__) 
 require "socket"
+require "ProtocolLogic"
 
 class AdsServer
-
+  
+  include ProtocolLogic
   def initialize( host,port )
     @user_info = []
     @descriptors = []
@@ -24,8 +27,11 @@ class AdsServer
               @descriptors.delete(sock)
             else
               msg = sock.gets()
-              if msg =~ /user_info:|source_info:|admin_info:/
+              user_info = @user_info[@descriptors.index(sock)-1]
+              if (msg =~ /user_info:|source_info:|admin_info:/) and user_info.nil? 
                 eval_first_msg(msg,sock) 
+              elsif !(user_info.nil?)
+                sock.write("You are registered #{user_info[:nickname]}, do not try to deceive me\n")
               else
                 response_request(msg,sock)
               end
@@ -65,10 +71,5 @@ class AdsServer
       end
     end
     puts str
-  end
-  
-  def response_request(umsg,sock) 
-    role = @user_info[@descriptors.index(sock)-1][:role]
-    puts role
   end
 end 
