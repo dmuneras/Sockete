@@ -24,13 +24,14 @@ class AdsServer
               accept_new_connection
             elsif sock.eof? 
               sock.close
+              @user_info.delete(@user_info[@descriptors.index(sock)-1])
               @descriptors.delete(sock)
             else
               msg = sock.gets()
               user_info = @user_info[@descriptors.index(sock)-1]
               if (msg =~ /user_info:|source_info:|admin_info:/) and user_info.nil? 
                 eval_first_msg(msg,sock) 
-              elsif !(user_info.nil?)
+              elsif (msg =~ /user_info:|source_info:|admin_info:/) and !(user_info.nil?)
                 sock.write("You are registered #{user_info[:nickname]}, do not try to deceive me\n")
               else
                 response_request(msg,sock)
@@ -56,11 +57,11 @@ class AdsServer
       @user_info.push({:nickname => user_info[1],:role => "client", :channels => []})
       sock.write("Welcome #{user_info[1]}\n")
     elsif (umsg =~ /source_info:/) 
-      @user_info.push({:nickname => user_info[1],:role => "editor"}) 
-      sock.write("Welcome #{user_info[1]}\n")
+      @user_info.push({:nickname => user_info[1],:role => "editor",:status => "logging"}) 
+      sock.write("password:\n")
     elsif (umsg =~ /admin_info:/ )
-      @user_info.push({:nickname => user_info[1],:role => "admin"}) 
-      sock.write("Welcome Admin\n")
+      @user_info.push({:nickname => user_info[1],:role => "admin", :status => "logging"}) 
+      sock.write("password:\n")
     end 
   end
 
