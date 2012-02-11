@@ -1,73 +1,74 @@
 require "socket"
+
 class AdsServer
-  attr_accessor :descriptors, :user_info
+
   def initialize( host,port )
-    self.user_info = []
-    self.descriptors = []
+    @user_info = []
+    @descriptors = []
     @serverSocket = TCPServer.new( host, port )
     @serverSocket.setsockopt( Socket::SOL_SOCKET, Socket::SO_REUSEADDR, 1 )
     printf("adsServer started on port %d\n", port)
-    self.descriptors.push( @serverSocket )
+    @descriptors.push( @serverSocket )
   end 
 
   def run
     while true
       begin
-        res = select( self.descriptors, nil, nil, nil)
+        res = select( @descriptors, nil, nil, nil)
         if res != nil then
           for sock in res[0]
             if sock == @serverSocket 
               accept_new_connection
             elsif sock.eof? 
               sock.close
-              self.descriptors.delete(sock)
+              @descriptors.delete(sock)
             else
-              puts "hey"
-              eval_msg(sock.gets(),sock) 
+              msg = sock.gets()
+              if msg =~ /user_info:|source_info:|admin_info:/
+                eval_first_msg(msg,sock) 
+              else
+                response_request(msg,sock)
+              end
             end
           end
         end
       rescue => e
-        puts "Somnething wrong happened #{e}"
+        puts "Somenthing wrong happened #{e}"
       end
     end
   end 
-  
+
   private
   def accept_new_connection
     newsock = @serverSocket.accept
-    self.descriptors.push( newsock )
+    @descriptors.push( newsock )
   end 
-  
-  def eval_msg(umsg,sock)
+
+  def eval_first_msg(umsg,sock)
+    user_info = umsg.split(" ")
     if umsg =~ /user_info:/
-      first_message(umsg,sock)
-      return 
-    elsif umsg =~ /get_ads:/ 
-      index = self.descriptors.index(sock)
-      sock.write("#{self.user_info[index-1][:nickname]} from " +
-                "#{self.user_info[index-1][:channel]} => (underconstruction)sending ads...\n")
-      return
-    else
-      sock.write("Take a look to the manual: #{umsg.chop} isn't a valid message\n")
+      @user_info.push({:nickname => user_info[1],:role => "client", :channels => []})
+      sock.write("Welcome #{user_info[1]}\n")
+    elsif (umsg =~ /source_info:/) 
+      @user_info.push({:nickname => user_info[1],:role => "editor"}) 
+      sock.write("Welcome #{user_info[1]}\n")
+    elsif (umsg =~ /admin_info:/ )
+      @user_info.push({:nickname => user_info[1],:role => "admin"}) 
+      sock.write("Welcome Admin\n")
     end 
   end
-  
-  def first_message(msg,sock)
-    user_info = msg.split(" ")
-    self.user_info.push({:nickname => user_info[1], :channel => user_info[2]})
-    str = sprintf("Welcome %s\n", user_info[1])
-    sock.write(str)
-    puts str
-  end
 
-  def broadcast_string( str, omit_sock )
-    self.descriptors.each do |clisock|
-      if clisock != @serverSocket && clisock != omit_sock
+  def send_channel_msg( str, channel )
+    @descriptors.each do |sock|
+      if sock != @serverSocket 
         clisock.write(str)
       end
     end
-    print(str)
-  end 
-
+    puts str
+  end
+  
+  def response_request(umsg,sock) 
+    role = @user_info[@descriptors.index(sock)-1][:role]
+    puts role
+  end
 end 
