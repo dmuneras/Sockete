@@ -1,10 +1,10 @@
+require 'thread'
 class ServerClient 
  
    
   def initialize( nickname,host,port )
     @online = true
-    @pwd = false
-    @logged = false
+    #semaphore = Mutex.new
     begin
       request_connection( nickname,host,port )
       write_from_server
@@ -34,7 +34,7 @@ class ServerClient
     @writter = Thread.new do 
       while true 
         puts @socket.gets.chop 
-      end 
+      end
     end
   end 
   

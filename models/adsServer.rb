@@ -1,13 +1,15 @@
-$:.unshift File.dirname(__FILE__) 
 require "socket"
 require "ProtocolLogic"
+require "./db/database"
 
 class AdsServer
-  
+
   include ProtocolLogic
   def initialize( host,port )
     @user_info = []
     @descriptors = []
+    @channels = ["channel"]
+    @msg_queue = []
     @serverSocket = TCPServer.new( host, port )
     @serverSocket.setsockopt( Socket::SOL_SOCKET, Socket::SO_REUSEADDR, 1 )
     printf("adsServer started on port %d\n", port)
@@ -17,8 +19,8 @@ class AdsServer
   def run
     while true
       begin
-        res = select( @descriptors, nil, nil, nil)
-        if res != nil then
+        res = select( @descriptors, nil, nil)
+        if res != nil 
           for sock in res[0]
             if sock == @serverSocket 
               accept_new_connection
@@ -50,27 +52,5 @@ class AdsServer
     newsock = @serverSocket.accept
     @descriptors.push( newsock )
   end 
-
-  def eval_first_msg(umsg,sock)
-    user_info = umsg.split(" ")
-    if umsg =~ /user_info:/
-      @user_info.push({:nickname => user_info[1],:role => "client", :channels => []})
-      sock.write("Welcome #{user_info[1]}\n")
-    elsif (umsg =~ /source_info:/) 
-      @user_info.push({:nickname => user_info[1],:role => "editor",:status => "logging"}) 
-      sock.write("password:\n")
-    elsif (umsg =~ /admin_info:/ )
-      @user_info.push({:nickname => user_info[1],:role => "admin", :status => "logging"}) 
-      sock.write("password:\n")
-    end 
-  end
-
-  def send_channel_msg( str, channel )
-    @descriptors.each do |sock|
-      if sock != @serverSocket 
-        clisock.write(str)
-      end
-    end
-    puts str
-  end
+  
 end 

@@ -1,4 +1,3 @@
-$:.unshift File.dirname(__FILE__)
 require 'socket'
 require 'ServerClient'
 require "highline/import"
