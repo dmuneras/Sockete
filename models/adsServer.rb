@@ -1,3 +1,6 @@
+root = File.dirname(__FILE__)
+$:.unshift root + "/models"
+
 require "socket"
 require "ProtocolLogic"
 require "./db/database"
