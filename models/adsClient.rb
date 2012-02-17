@@ -61,9 +61,13 @@ class AdsClient < ServerClient
  
   private
   def request_connection(nickname,host,port )
-    @socket = TCPSocket.new(host,port) 
-    str =  "user_info: #{nickname}\n"
-    @socket.write(str)
+    begin
+      @socket = TCPSocket.new(host,port) 
+      str =  "user_info: #{nickname}\n"
+      @socket.write(str)
+    rescue => e
+      puts "I can't bind the socket because #{e}"
+    end
   end
 
 end
