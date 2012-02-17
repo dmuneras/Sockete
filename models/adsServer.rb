@@ -1,5 +1,5 @@
 require "socket"
-require "ProtocolLogic"
+require "protocolLogic"
 
 class AdsServer
 

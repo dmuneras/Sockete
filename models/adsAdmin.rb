@@ -1,5 +1,5 @@
 require 'socket'
-require 'ServerClient'
+require 'serverClient'
 require "highline/import"
 
 class AdsAdmin < ServerClient  

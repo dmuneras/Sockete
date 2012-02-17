@@ -1,5 +1,5 @@
 require 'socket'
-require 'ServerClient'
+require 'serverClient'
 class AdsClient < ServerClient
 
   def initialize( nickname,host,port)
