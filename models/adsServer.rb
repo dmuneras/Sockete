@@ -16,16 +16,16 @@ class AdsServer
   end 
 
   def run
-    Thread.new do
-      begin
-        while true
-          send_channel_msg("hola","channel")
-          sleep(5)
-        end
-      rescue => e
-        pust "Exception: #{e}"
-      end
-    end
+    #Thread.new do
+    #  begin
+    #    while true
+    #      send_channel_msg("hola","channel")
+    #      sleep(5)
+    #    end
+    #  rescue => e
+    #    pust "Exception: #{e}"
+    #  end
+    #end
     while true
       begin
         res = select( @descriptors, nil, nil)
