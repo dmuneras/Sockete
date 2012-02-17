@@ -1,9 +1,8 @@
 root = File.dirname(__FILE__)
-$:.unshift root + "/models"
+$:.unshift root
 
 require "socket"
 require "ProtocolLogic"
-require "./db/database"
 
 class AdsServer
 

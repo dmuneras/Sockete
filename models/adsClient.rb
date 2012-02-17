@@ -1,3 +1,6 @@
+root = File.dirname(__FILE__)
+$:.unshift root
+
 require 'socket'
 require 'ServerClient'
 class AdsClient < ServerClient
