@@ -30,6 +30,7 @@ class AdsServer
               @descriptors.delete(sock)
             else
               msg = sock.gets()
+              puts msg
               user_info = @user_info[@descriptors.index(sock)-1]
               if (msg =~ /user_info:|source_info:|admin_info:/) and user_info.nil? 
                 eval_first_msg(msg,sock) 
@@ -51,6 +52,5 @@ class AdsServer
   def accept_new_connection
     newsock = @serverSocket.accept
     @descriptors.push( newsock )
-  end 
-  
+  end   
 end 

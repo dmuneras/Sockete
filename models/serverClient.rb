@@ -11,7 +11,6 @@ class ServerClient
       while @online do
           @online = read_from_console  
       end
-      Thread.kill(@writter) 
     rescue Exception => e
       puts "Somenthing happend: #{e}"
     end
@@ -32,7 +31,7 @@ class ServerClient
 
   def write_from_server
     @writter = Thread.new do 
-      while true 
+      while @online
         puts @socket.gets.chop 
       end
     end

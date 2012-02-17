@@ -94,7 +94,8 @@ module ProtocolLogic
   def evaluate_editor(umsg,sock)
     case umsg[0]
     when "pwd:"
-      evaluate_pwd(umsg,sock,@user)
+      puts "Password: " + umsg[1]
+      evaluate_pwd(umsg,sock)
     when "create_ad:"
       create_ad(umsg,sock)
     when "ads_list"
@@ -137,6 +138,7 @@ module ProtocolLogic
       msg = {:id => @msg_queue.size,:channel => channel, :ad => msg.join(" "), :send => false}
       @msg_queue.push(msg)
       sock.write("Message successfully created. Channel => #{channel}\n")
+      send_channel_msg(msg[:ad],msg[:channel])
     else
       sock.write("Channel #{channel} doesnt exist\n")
     end
@@ -165,12 +167,16 @@ module ProtocolLogic
     return title + (list.collect {|x| " =>" + x }).join("\n")
   end
   
-  def send_channel_msg( str, channel )
-     @descriptors.each do |sock|
-       if sock != @serverSocket 
-         clisock.write(str)
-       end
-     end
-     puts str
-   end
+  def send_channel_msg( ad, channel )
+    @descriptors.each do |sock|
+      if sock != @serverSocket
+        user = @user_info[@descriptors.index(sock)-1] 
+        unless user[:channels].nil?
+          str = "Advice from channel #{channel} : #{ad}\n"
+          sock.write(str)
+          puts str
+        end
+      end
+    end
+  end
 end
