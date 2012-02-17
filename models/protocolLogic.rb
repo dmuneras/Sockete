@@ -28,6 +28,7 @@ module ProtocolLogic
       msg = msg.strip
       umsg = msg.split(" ")
       cmd = umsg[0]
+      puts "Comando ingresado: " +  cmd
       case @user[:role]
       when "client"
         if @@cmd_client.include? cmd
@@ -171,7 +172,7 @@ module ProtocolLogic
     @descriptors.each do |sock|
       if sock != @serverSocket
         user = @user_info[@descriptors.index(sock)-1] 
-        unless user[:channels].nil?
+        if user[:role] == "client"  and user[:mode] == "push"
           str = "Advice from channel #{channel} : #{ad}\n"
           sock.write(str) if user[:channels].include? channel
           puts str
