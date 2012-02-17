@@ -5,24 +5,25 @@ class ServerClient
   def initialize( nickname,host,port )
     @online = true
     @advices = Queue.new
-    @response =  Queue.new
     begin
       request_connection( nickname,host,port )
       write_from_server
       while @online do
-          @online = read_from_console  
-          Thread.new do
-            begin
+        @online = read_from_console  
+        Thread.new do
+          begin
             size = @advices.size
-            puts "========  Advices from server =========" if size > 0
-            @advices.size.times do
-              puts @advices.pop
+            unless size.nil?
+              puts "========  Advices from server =========" if size > 0
+              @advices.size.times do
+                puts @advices.pop
+              end
+              puts "=======================================" if size > 0
             end
-            puts "=======================================" if size > 0
-            rescue => e
-              p "Error #{e}"
-            end
+          rescue => e
+            p "Error #{e}"
           end
+        end
       end
     rescue Exception => e
       puts "Somenthing happend: #{e}"
@@ -46,7 +47,7 @@ class ServerClient
     @writter = Thread.new do 
       while @online
         begin
-          msg =  @socket.gets.chop 
+          msg =  @socket.gets.chop unless @socket.gets.nil?
           if msg =~ /Advice from channel/ 
             @advices << msg
           else
