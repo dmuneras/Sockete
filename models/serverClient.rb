@@ -4,12 +4,25 @@ class ServerClient
    
   def initialize( nickname,host,port )
     @online = true
-    #semaphore = Mutex.new
+    @advices = Queue.new
+    @response =  Queue.new
     begin
       request_connection( nickname,host,port )
       write_from_server
       while @online do
           @online = read_from_console  
+          Thread.new do
+            begin
+            size = @advices.size
+            puts "========  Advices from server =========" if size > 0
+            @advices.size.times do
+              puts @advices.pop
+            end
+            puts "=======================================" if size > 0
+            rescue => e
+              p "Error #{e}"
+            end
+          end
       end
     rescue Exception => e
       puts "Somenthing happend: #{e}"
@@ -32,7 +45,17 @@ class ServerClient
   def write_from_server
     @writter = Thread.new do 
       while @online
-        puts @socket.gets.chop 
+        begin
+          msg =  @socket.gets.chop 
+          if msg =~ /Advice from channel/ 
+            @advices << msg
+          else
+            msg = "FROM SERVER >>>> #{msg}"
+            puts msg
+          end
+        rescue => e
+          puts "Error writter Thread #{e}"
+        end
       end
     end
   end 

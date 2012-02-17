@@ -173,7 +173,7 @@ module ProtocolLogic
         user = @user_info[@descriptors.index(sock)-1] 
         unless user[:channels].nil?
           str = "Advice from channel #{channel} : #{ad}\n"
-          sock.write(str)
+          sock.write(str) if user[:channels].include? channel
           puts str
         end
       end
