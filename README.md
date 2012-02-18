@@ -10,8 +10,10 @@ DESCRIPCION DEL PROBLEMA
 -------------------------
 
 El sistema debe tener un sistema de gestión que permita:
+
 1. Canales y Mensajes: Canales a través de los cuales fluyen los Mensajes originados en un AdFuente (pueden haber varias fuentes
-en un mismo Canal) hacia uno o más AdCliente
+en un mismo Canal) hacia uno o más AdCliente.
+
 2. Envíos: 
 
 * son los mensajes que son enviados por un AdFuente hacia un Canal y que le debe llegar a los AdCliente. Tenga en cuenta la situación cuando los clientes están o no en línea, que supuesto realizar al respecto.
