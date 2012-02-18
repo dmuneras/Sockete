@@ -8,6 +8,7 @@ class AdsClient < ServerClient
     @response = Queue.new
     begin
       request_connection( nickname,host,port )
+      puts @socket
       enqueue_from_server
       while @online do
         if @response.size > 0
@@ -25,11 +26,11 @@ class AdsClient < ServerClient
 
   def write_asynchronic_msg
     begin
-      puts "========  Advices from server =========" 
+      puts "===============  Advices from server ===================" 
       @advices.size.times do
         puts @advices.pop
       end
-      puts "=======================================" 
+      puts "========================================================" 
     rescue => e
       puts "MODE PUSH: Error Writing asynchronic advices :  #{e}"
     end 
@@ -60,8 +61,10 @@ class AdsClient < ServerClient
  
   private
   def request_connection(nickname,host,port )
+    puts "Trying to connect to: " + host
     @socket = TCPSocket.new(host,port) 
     raise Exception.new("I can't bind the socket") if @socket.nil?
+    puts @socket
     str =  "user_info: #{nickname}\n"
     @socket.write(str)
   end
