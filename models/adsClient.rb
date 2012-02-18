@@ -41,8 +41,7 @@ class AdsClient < ServerClient
         begin
           if @socket.eof?
             @socket.close
-            puts "Server is down"
-            @online = false
+            puts "Server is down, please press quit"
             break
           end
           msg =  @socket.gets.chop
@@ -61,13 +60,10 @@ class AdsClient < ServerClient
  
   private
   def request_connection(nickname,host,port )
-    begin
-      @socket = TCPSocket.new(host,port) 
-      str =  "user_info: #{nickname}\n"
-      @socket.write(str)
-    rescue => e
-      puts "I can't bind the socket because #{e}"
-    end
+    @socket = TCPSocket.new(host,port) 
+    raise Exception.new("I can't bind the socket") if @socket.nil?
+    str =  "user_info: #{nickname}\n"
+    @socket.write(str)
   end
 
 end

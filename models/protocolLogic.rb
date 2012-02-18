@@ -2,7 +2,7 @@ module ProtocolLogic
 
   @@editor_pwd = "editor"
   @@admin_pwd = "admin"
-  @@cmd_client = %w[set_mode: get_ads: channel_list rm_channel: add_channel: my_channels]
+  @@cmd_client = %w[set_mode: get_ads channel_list rm_channel: add_channel: my_channels]
   @@cmd_editor = %w[create_ad: rm_msg: pwd: ads_list ]
   @@cmd_admin =  %W[add_channel: rm_channel: channel_list change_pwd: change_editor_pwd: pwd:]
   @@mode = %w[push pull]
@@ -11,7 +11,7 @@ module ProtocolLogic
   def eval_first_msg(umsg,sock)
     user_info = umsg.split(" ")
     if umsg =~ /user_info:/
-      @user_info.push({:nickname => user_info[1],:role => "client", :channels => [], :mode => "pull"})
+      @user_info.push({:nickname => user_info[1],:role => "client", :channels => [], :mode => "pull", :time => Time.new})
       sock.write("Welcome #{user_info[1]}\n")
     elsif (umsg =~ /source_info:/) 
       @user_info.push({:nickname => user_info[1],:role => "editor",:status => "logging"}) 
@@ -83,9 +83,10 @@ module ProtocolLogic
       else
         sock.write("Invalid mode: #{umsg[1]}\n")
       end
-    when "get_ads:"
+    when "get_ads"
+      puts "inside get_ads"
       if @user[:mode] == "pull"
-        sock.write("Underconstruction\n")
+        send_pull_msg(sock)
       else
         sock.write("You have to change your mode to pull\n")
       end
@@ -101,7 +102,7 @@ module ProtocolLogic
       create_ad(umsg,sock)
     when "ads_list"
       if @msg_queue.size > 0 
-        sock.write("Message queue #{@msg_queue.join(" \n ")}\n") 
+        sock.write("#{list_to_print("Advices queue",@msg_queue)}\n") 
       else
         sock.write("Nothing in message queue\n")
       end
@@ -136,7 +137,7 @@ module ProtocolLogic
     channel = umsg[1]
     msg = umsg - umsg[0..2]
     if @channels.include? channel
-      msg = {:id => @msg_queue.size,:channel => channel, :ad => msg.join(" "), :send => false}
+      msg = {:id => @msg_queue.size,:channel => channel, :ad => msg.join(" "), :time => Time.new}
       @msg_queue.push(msg)
       sock.write("Message successfully created. Channel => #{channel}\n")
       send_channel_msg(msg[:ad],msg[:channel])
@@ -165,7 +166,7 @@ module ProtocolLogic
     line = "| " 
     1.upto(title.size){line << "-"}
     title = "| " + title + "     | \n" + line + "     | \n"
-    return title + (list.collect {|x| " =>" + x }).join("\n")
+    return title + (list.collect {|x| " => #{x}" }).join("\n")
   end
   
   def send_channel_msg( ad, channel )
@@ -180,4 +181,24 @@ module ProtocolLogic
       end
     end
   end
+
+  def send_pull_msg sock
+    to_send = []
+    if !(@msg_queue.empty?)
+      for msg in @msg_queue
+        if @user[:channels].include? msg[:channel]
+          str = "[channel : #{msg[:channel]} | content: #{msg[:ad]}]\n"
+          to_send.push(str)
+        end
+      end
+      if !(to_send.empty?)
+        sock.write("#{list_to_print("ADVICES FROM SERVER",to_send)}\n")
+      else
+        sock.write("Nothing to show\n")
+      end
+    else
+      sock.write("Nothing to show\n")
+    end
+  end
+
 end
