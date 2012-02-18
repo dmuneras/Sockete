@@ -7,7 +7,7 @@ INTEGRANTES
 
 * Daniel Munera Sanchez
 * Ernesto Javier Quintero
-* Otro
+* Jorge Andres Gaviria Lopez
 
 
 Para informacion vaya a la carpeta documents.
