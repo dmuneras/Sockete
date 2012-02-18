@@ -3,6 +3,7 @@ require 'serverClient'
 require "highline/import"
 
 class AdsAdmin < ServerClient  
+  
   def initialize( nickname,host,port)
      @online = true
      begin
