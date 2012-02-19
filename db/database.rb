@@ -10,6 +10,26 @@ require 'sqlite3'
       user_id  INTEGER PRIMARY KEY ASC,
       nickname varchar(30) UNIQUE
     );
+    create table if not exists  channel(
+      channel_id INTEGER PRIMARY KEY ASC,
+      channel_name varchar(30) UNIQUE
+    );
+    create table if not exists subscription(
+      user_id INTEGER,
+      channel_id INTEGER 
+    );
+    create table if not exists advice(
+      advice_id INTEGER PRIMARY KEY ASC,
+      channel_id INTEGER,
+      message varchar(30),
+      date DATE
+    );
+    create table if not exists log(
+      nickname varchar(30),
+      advice_id INTEGER,
+      date DATE
+      CONSTRAINT PRIMARY KEY(nickname,advice_id)
+    );
     SQL
   else
     # show tables
@@ -19,6 +39,7 @@ require 'sqlite3'
       p row
     end
   end
+  
   
   # Execute a few inserts
   #{
@@ -36,7 +57,7 @@ require 'sqlite3'
   
 
   
-  # Find tables into database
+   #Find tables into database
   #db.execute( "SELECT * from user" ) do |row|
   #  p row
   #end

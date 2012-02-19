@@ -8,7 +8,6 @@ class AdsClient < ServerClient
     @response = Queue.new
     begin
       request_connection( nickname,host,port )
-      puts @socket
       enqueue_from_server
       while @online do
         if @response.size > 0
@@ -64,7 +63,6 @@ class AdsClient < ServerClient
     puts "Trying to connect to: " + host
     @socket = TCPSocket.new(host,port) 
     raise Exception.new("I can't bind the socket") if @socket.nil?
-    puts @socket
     str =  "user_info: #{nickname}\n"
     @socket.write(str)
   end

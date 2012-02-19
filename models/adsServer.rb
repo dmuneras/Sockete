@@ -7,12 +7,13 @@ class AdsServer
   def initialize( host,port )
     @user_info = []
     @descriptors = []
-    @channels = ["channel"]
+    @channels = []
     @msg_queue = []
     @serverSocket = TCPServer.new( host, port )
     @serverSocket.setsockopt( Socket::SOL_SOCKET, Socket::SO_REUSEADDR, 1 )
     printf("adsServer started on port %d\n", port)
     @descriptors.push( @serverSocket )
+    fill_general_info
   end 
 
   def run
