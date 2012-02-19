@@ -68,9 +68,9 @@ class DbConnection
      @db.execute "insert into subscription (channel_id,user_id) values ('#{channel_id[0][0]}','#{user_id[0][0]}')"
   end
   
-  def unsubscribe(channel,user)
-    channel_id = (@db.execute "SELECT channel_id from channel WHERE channel_name = '#{channel_name}'")
-    user_id =  (@db.execute "SELECT user_id from channel WHERE nickname = '#{nickname}'")
+  def unsubscribe(channel,nickname)
+    channel_id = (@db.execute "SELECT channel_id from channel WHERE channel_name = '#{channel}'")
+    user_id =  (@db.execute "SELECT user_id from user WHERE nickname = '#{nickname}'")
     @db.execute "delete from subscription where channel_id = '#{channel_id[0][0]}' and user_id = '#{user_id[0][0]}'"
   end
   

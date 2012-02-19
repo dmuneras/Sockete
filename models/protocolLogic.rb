@@ -135,6 +135,7 @@ module ProtocolLogic
         sock.write("The channels already exits\n")
       end
     when "rm_channel:"
+      channel = umsg[1]
       if @channels.include? channel
         @@connection.delete_channel channel
         @channels.delete(channel)
