@@ -16,6 +16,7 @@ class AdsSource < ServerClient
        puts "Somenthing happend: #{e}"
      end
   end
+  
   private
   def request_connection(nickname,host,port )
     @socket = TCPSocket.new(host,port)   

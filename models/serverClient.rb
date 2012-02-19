@@ -24,8 +24,7 @@ class ServerClient
         begin
           if @socket.eof?
             @socket.close
-            puts "Server is down"
-            @online = false
+            puts "Server is down, please press quit"
             break
           end
           msg =  @socket.gets.chop
