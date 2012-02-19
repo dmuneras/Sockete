@@ -23,6 +23,7 @@ class AdsClient < ServerClient
     end
   end
 
+  #Metodo para escribir los mensajes que fueron encolados mientras el cliente seguia su interaccion con el sistema
   def write_asynchronic_msg
     begin
       puts "===============  Advices from server ===================" 
@@ -35,6 +36,7 @@ class AdsClient < ServerClient
     end 
   end
 
+  #Metodo para iniciar el encolamiento de mensajes que vienen del servidor
   def enqueue_from_server
     @writter = Thread.new do 
       while @online

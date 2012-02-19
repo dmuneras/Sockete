@@ -16,6 +16,8 @@ class AdsServer
     fill_general_info
   end 
 
+  #Metodo para iniciar el servidor, empezando a seleccionar con el metodo select los clientes que tienen eventos y respondiendo 
+  #a sus request
   def run
     while true
       begin
