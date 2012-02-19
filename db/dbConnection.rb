@@ -88,7 +88,7 @@ class DbConnection
     if advices.size <= 10
       for advice in advices
         channel = (@db.execute "SELECT channel_name from channel WHERE channel_id = '#{advice[1]}'")[0][0]
-        ad =  {:id => advice[0] , :channel_id => channel , :ad => advice[2], :time => advice[3] }
+        ad =  {:id => advice[0] , :channel => channel , :ad => advice[2], :time => advice[3] }
         queue.push(ad)
       end
     else
