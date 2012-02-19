@@ -5,6 +5,7 @@ require "dbConnection"
 
 module ProtocolLogic
   
+  #Constantes utilizadas para realizar la evalucion de los mensajes enviados por el cliente y responderlos correctamente
   @@editor_pwd = "editor"
   @@admin_pwd = "admin"
   @@cmd_client = %w[set_mode: get_ads: channel_list rm_channel: add_channel: my_channels]
@@ -13,6 +14,8 @@ module ProtocolLogic
   @@mode = %w[push pull]
   @@connection = DbConnection.new
   
+  #Metodo que evalua el primer mensaje de un usuario y hace un registro de este en los arrays que estamos utilizando como
+  #memoria.
   def eval_first_msg(umsg,sock)
     user_info = umsg.split(" ")
     if umsg =~ /user_info:/
@@ -29,6 +32,7 @@ module ProtocolLogic
     end 
   end
   
+  #Metodo principal para responder a una peticion de un usuario dependiendo de su rol y comandos validos.
   def response_request(msg,sock)
     begin 
       @user = @user_info[@descriptors.index(sock)-1]
@@ -61,6 +65,7 @@ module ProtocolLogic
     end
   end 
 
+  #Metodo que evalua las peticiones de un usuario con rol cliente
   def evaluate_client(umsg,sock)
     case umsg[0]
     when "channel_list"
@@ -102,6 +107,7 @@ module ProtocolLogic
     end
   end
 
+  #Metodo que evalua las peticiones de un usuario con rol editor(adFuente)
   def evaluate_editor(umsg,sock)
     case umsg[0]
     when "pwd:"
@@ -121,6 +127,7 @@ module ProtocolLogic
     end
   end
 
+  #Metodo que evalua las peticiones de un usuario con rol admin
   def evaluate_admin(umsg,sock)
     case umsg[0]
     when "pwd:"
@@ -148,6 +155,7 @@ module ProtocolLogic
     end
   end
 
+  #Metodo que crea un advice cuando un editor lo crea, lo persiste y lo guarda en la memoria temporal para su envio
   def create_ad(umsg,sock)
     channel = umsg[1]
     msg = umsg - umsg[0..2]
@@ -163,6 +171,7 @@ module ProtocolLogic
     end
   end
 
+  #Metodo que evalua el password dependiendo del rol del usuario
   def evaluate_pwd(umsg,sock)
     puts "Given password: #{umsg[1]}"
     if @user[:role] == "editor"
@@ -179,6 +188,7 @@ module ProtocolLogic
     end
   end
   
+  #Metodo para dar un formato a las listas que se van a mandar al usuario
   def list_to_print(title,list)
     line = "| " 
     1.upto(title.size){line << "-"}
@@ -186,6 +196,7 @@ module ProtocolLogic
     return title + (list.collect {|x| " => #{x}" }).join("\n")
   end
   
+  #Metodo para enviar un advice de un canal a los clientes en modo PUSH
   def send_channel_msg( msg)
     @descriptors.each do |sock|
       if sock != @serverSocket
@@ -199,6 +210,7 @@ module ProtocolLogic
     end
   end
 
+  #Metodo para enviar advices de un canal especifico en modo PULL
   def send_pull_msg sock, channel
     to_send = []
     if !(@msg_queue.empty?)
@@ -219,6 +231,8 @@ module ProtocolLogic
     end
   end
   
+  #Metodo que inicializa los arrays de memoria @channels con los canales existentes en la base de datos.
+  #@msg_queue con los ultimos 10 mensajes de la base de datos.
   def fill_general_info
     @channels = @@connection.fill_channels
     @msg_queue = @@connection.fill_queue_msg
