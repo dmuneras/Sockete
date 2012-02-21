@@ -51,6 +51,7 @@ class AdsServer
   end 
 
   private
+  #Metodo para aceptar una nueva conexion de un cliente.
   def accept_new_connection
     newsock = @serverSocket.accept
     @descriptors.push( newsock )
