@@ -56,7 +56,7 @@ class DbConnection
   
   def register_sent_ad(nickname,advice_id,time)
     begin
-      @db.execute "insert into log (nickname,advice_id,time) values ('#{nickname}','#{advice_id}','#{time}')"
+      @db.execute "insert into log (nickname,advice_id,date) values ('#{nickname}','#{advice_id}','#{time}')"
     rescue => e
       puts "Something happend updating log #{e}"
     end
