@@ -218,7 +218,7 @@ module ProtocolLogic
         if channel == msg[:channel]
           str = "[channel : #{msg[:channel]} | content: #{msg[:ad]}]\n"
           to_send.push(str)
-          @@connection.register_sent_ad(@user[:nickname],msg[:id],msg[:time])
+          #@@connection.register_sent_ad(@user[:nickname],msg[:id],msg[:time])
         end
       end
       if !(to_send.empty?)

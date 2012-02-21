@@ -24,14 +24,14 @@ COMO EJECUTAR
 
 <code>
 	ruby startServer.rb [host] [port] => 
-	Ej. ruby startServer.rb localhost 2626
+	Ej. ruby startServer.rb localhost 3030
 <code>
 	
 * Para ejecutar un cliente debemos ir a la carpeta donde se encuentra el archivo startClient.rb y ejecutar el siguiente comando:
 
 <code>
 	ruby startClient.rb [nickname] [role] [host-server] [port-server] =>
-	Ej. ruby startClient.rb dmuneras client localhost 2626
+	Ej. ruby startClient.rb dmuneras client localhost 3030
 <code>
 	
 Para informacion vaya a la carpeta documents.
