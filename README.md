@@ -33,5 +33,7 @@ COMO EJECUTAR
 	ruby startClient.rb [nickname] [role] [host-server] [port-server] =>
 	Ej. ruby startClient.rb dmuneras client localhost 3030
 <code>
+
+* Cada usuario tiene un comando help para obtener informacion acerca de los comandos validos.
 	
 Para informacion vaya a la carpeta documents.

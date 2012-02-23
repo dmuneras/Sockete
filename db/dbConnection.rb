@@ -9,6 +9,7 @@ class DbConnection
   def initialize
     puts "INCIANDO DB..."
     @db =  SQLite3::Database.new "db/advice.db"
+    @db.execute "VACUUM"
   end
   
   def insert_user nickname

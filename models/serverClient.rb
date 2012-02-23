@@ -28,7 +28,7 @@ class ServerClient
             break
           end
           msg =  @socket.gets.chop
-          msg = "FROM SERVER >>>> #{msg}"
+          msg = "=> #{msg}"
           puts msg
         rescue => e
           puts "Error writter Thread #{e}"

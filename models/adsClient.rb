@@ -50,7 +50,7 @@ class AdsClient < ServerClient
           if msg =~ /Advice from channel/ 
             @advices << msg
           else
-            msg = "FROM SERVER >>>> #{msg}"
+            msg = "=> #{msg}"
             @response << msg
           end
         rescue => e

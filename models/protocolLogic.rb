@@ -8,9 +8,9 @@ module ProtocolLogic
   #Constantes utilizadas para realizar la evalucion de los mensajes enviados por el cliente y responderlos correctamente
   @@editor_pwd = "editor"
   @@admin_pwd = "admin"
-  @@cmd_client = %w[set_mode: get_ads: channel_list rm_channel: add_channel: my_channels]
-  @@cmd_editor = %w[create_ad: rm_ad: pwd: ads_list ]
-  @@cmd_admin =  %W[add_channel: rm_channel: channel_list change_pwd: change_editor_pwd: pwd:]
+  @@cmd_client = %w[set_mode: get_ads: channel_list rm_channel: add_channel: my_channels help]
+  @@cmd_editor = %w[create_ad: rm_ad: pwd: ads_list help ]
+  @@cmd_admin =  %W[add_channel: rm_channel: channel_list change_pwd: change_editor_pwd: pwd: help]
   @@mode = %w[push pull]
   @@connection = DbConnection.new
   
@@ -104,6 +104,8 @@ module ProtocolLogic
       else
         sock.write("You have to change your mode to pull\n")
       end
+    when "help"
+	sock.write("#{list_to_print("VALID COMMANDS",["my_channels -> to see your channels(subscriptions)", "add_channel: <channel_name>","rm_channel: <channel_name>", "channel_list","set_mode: pull | push", "get_ads: <channel_name >"])}\n")
     end
   end
 
@@ -122,8 +124,11 @@ module ProtocolLogic
         sock.write("Nothing in message queue\n")
       end
     when "rm_ad:"
-     advice = @msg_queue[@msg_queue.index{|ad| puts ad; ad[:id] == umsg[1]}]
-     puts advice
+      advice = @msg_queue[@msg_queue.index{|ad| puts ad; ad[:id] == umsg[1]}]
+      puts advice
+
+    when "help"
+      sock.write("#{list_to_print("VALID COMMANDS",["create_ad: <channel_name><blank><,<blank><advice content>","ads_list -> to see server advices list"])}\n")
     end
   end
 
@@ -152,6 +157,8 @@ module ProtocolLogic
       end
     when "channel_list"
       sock.write("#{list_to_print("CHANNELS",@channels)}\n")
+    when "help"
+      sock.write("#{list_to_print("VALID COMMANDS",["add_channel: <channel_name>","rm_channel: <channel_name>"])}\n")
     end
   end
 
