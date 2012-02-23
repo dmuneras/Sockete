@@ -1,6 +1,6 @@
 require 'thread'
 class ServerClient 
-
+  
   def read_from_console
     flag = true
     while flag
