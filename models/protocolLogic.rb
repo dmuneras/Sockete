@@ -197,9 +197,9 @@ module ProtocolLogic
   
   #Metodo para dar un formato a las listas que se van a mandar al usuario
   def list_to_print(title,list)
-    line = "| " 
+    line = "" 
     1.upto(title.size){line << "-"}
-    title = "| " + title + "     | \n" + line + "     | \n"
+    title = title + "\n" + line + "\n"
     return title + (list.collect {|x| " => #{x}" }).join("\n")
   end
   
