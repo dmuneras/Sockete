@@ -36,4 +36,10 @@ COMO EJECUTAR
 
 * Cada usuario tiene un comando help para obtener informacion acerca de los comandos validos.
 	
+* Los usuarios editor y admin, tienen unas claves para ingresar, la clave de editor es editor y la de admin es admin.
+
+* Si depronto el servidor esta muy lento en responder es por un asunto de la gema de sqlite del servidor, en tal caso ejecute
+el comando:
+
+<code> git checkout nodb <code>
 Para informacion vaya a la carpeta documents.
